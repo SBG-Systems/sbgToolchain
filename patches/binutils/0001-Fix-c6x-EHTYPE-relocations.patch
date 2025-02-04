@@ -1,0 +1,73 @@
+From fda7e903c67af19f6b7771c56440def16b5f2362 Mon Sep 17 00:00:00 2001
+From: Richard Braun <richard.braun@sbg-systems.com>
+Date: Mon, 27 Jan 2025 15:59:36 +0100
+Subject: [PATCH] Fix c6x EHTYPE relocations
+
+This must match how the compiler processes EHTYPE relocations.
+---
+ bfd/elf32-tic6x.c     | 8 ++++----
+ gas/config/tc-tic6x.c | 1 -
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/bfd/elf32-tic6x.c b/bfd/elf32-tic6x.c
+index afd8e0d2aff..7e29e24228d 100644
+--- a/bfd/elf32-tic6x.c
++++ b/bfd/elf32-tic6x.c
+@@ -1117,8 +1117,8 @@ static reloc_howto_type elf32_tic6x_howto_table_rel[] =
+ 	 complain_overflow_dont,/* complain_on_overflow */
+ 	 bfd_elf_generic_reloc,	/* special_function */
+ 	 "R_C6000_EHTYPE",	/* name */
+-	 false,			/* partial_inplace */
+-	 0,			/* src_mask */
++	 true,			/* partial_inplace */
++	 0xffffffff,		/* src_mask */
+ 	 0xffffffff,		/* dst_mask */
+ 	 false),		/* pcrel_offset */
+   EMPTY_HOWTO (R_C6000_PCR_H16),
+@@ -2413,6 +2413,7 @@ elf32_tic6x_relocate_section (bfd *output_bfd,
+ 	case R_C6000_SBR_H16_B:
+ 	case R_C6000_SBR_H16_H:
+ 	case R_C6000_SBR_H16_W:
++	case R_C6000_EHTYPE:
+ 	  sbh = bfd_link_hash_lookup (info->hash, "__c6xabi_DSBT_BASE",
+ 				      false, false, true);
+ 	  if (sbh != NULL
+@@ -2442,7 +2443,6 @@ elf32_tic6x_relocate_section (bfd *output_bfd,
+ 	case R_C6000_SBR_GOT_U15_W:
+ 	case R_C6000_SBR_GOT_L16_W:
+ 	case R_C6000_SBR_GOT_H16_W:
+-	case R_C6000_EHTYPE:
+ 	  /* Relocation is to the entry for this symbol in the global
+ 	     offset table.  */
+ 	  if (htab->elf.sgot == NULL)
+@@ -2767,7 +2767,6 @@ elf32_tic6x_check_relocs (bfd *abfd, struct bfd_link_info *info,
+ 	case R_C6000_SBR_GOT_U15_W:
+ 	case R_C6000_SBR_GOT_L16_W:
+ 	case R_C6000_SBR_GOT_H16_W:
+-	case R_C6000_EHTYPE:
+ 	  /* This symbol requires a global offset table entry.  */
+ 	  if (h != NULL)
+ 	    {
+@@ -2913,6 +2912,7 @@ elf32_tic6x_check_relocs (bfd *abfd, struct bfd_link_info *info,
+ 	case R_C6000_SBR_H16_B:
+ 	case R_C6000_SBR_H16_H:
+ 	case R_C6000_SBR_H16_W:
++	case R_C6000_EHTYPE:
+ 	  {
+ 	    /* These relocations implicitly reference __c6xabi_DSBT_BASE.
+ 	       Add an explicit reference so that the symbol will be
+diff --git a/gas/config/tc-tic6x.c b/gas/config/tc-tic6x.c
+index 302043a2676..eb19309d5c9 100644
+--- a/gas/config/tc-tic6x.c
++++ b/gas/config/tc-tic6x.c
+@@ -2051,7 +2051,6 @@ tic6x_fix_adjustable (fixS *fixP)
+     case BFD_RELOC_C6000_SBR_GOT_U15_W:
+     case BFD_RELOC_C6000_SBR_GOT_H16_W:
+     case BFD_RELOC_C6000_SBR_GOT_L16_W:
+-    case BFD_RELOC_C6000_EHTYPE:
+       return 0;
+ 
+     case BFD_RELOC_C6000_PREL31:
+-- 
+2.39.5
+

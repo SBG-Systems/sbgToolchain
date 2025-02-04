@@ -1,0 +1,25 @@
+From 7720c05b3d1ebe7ca70d2d4421ca87e0706c526d Mon Sep 17 00:00:00 2001
+From: Richard Braun <richard.braun@sbg-systems.com>
+Date: Fri, 13 Dec 2024 10:44:17 +0100
+Subject: [PATCH] Do not define MISSING_SYSCALL_NAMES for tic6x
+
+---
+ newlib/configure.host | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/newlib/configure.host b/newlib/configure.host
+index 386183466..e5a2c53ad 100644
+--- a/newlib/configure.host
++++ b/newlib/configure.host
+@@ -552,7 +552,7 @@ case "${host}" in
+ 	default_newlib_atexit_dynamic_alloc="no"
+ 	;;
+   tic6x*)
+-	newlib_cflags="${newlib_cflags} -DMISSING_SYSCALL_NAMES"
++	#newlib_cflags="${newlib_cflags} -DMISSING_SYSCALL_NAMES"
+ 	have_crt0="no"
+ 	;;
+   tic80*)
+-- 
+2.39.5
+
