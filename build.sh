@@ -52,7 +52,7 @@ build_binutils()
 		--disable-gdb \
 		--disable-gdbtk
 	make -j$NR_JOBS
-	make install
+	make install-strip
 }
 
 build_gcc()
@@ -84,14 +84,14 @@ build_gcc()
 		--disable-libssp \
 		$TARGET_GCC_CONFIGURE_OPTIONS
 	make -j$NR_JOBS all-gcc all-target-libgcc
-	make install-gcc install-target-libgcc
+	make install-strip-gcc install-strip-target-libgcc
 }
 
 build_gcc_libstdcxx()
 {
 	cd $BUILDDIR/gcc
 	make -j$NR_JOBS all-target-libstdc++-v3
-	make install-target-libstdc++-v3
+	make install-strip-target-libstdc++-v3
 }
 
 build_newlib()
@@ -119,7 +119,7 @@ build_newlib()
 		--disable-newlib-supplied-syscalls \
 		--disable-libssp
 	PATH=$HOSTDIR/bin:$PATH make -j$NR_JOBS CFLAGS_FOR_TARGET="$TARGET_CFLAGS"
-	PATH=$HOSTDIR/bin:$PATH make DESTDIR=$HOSTDIR install
+	PATH=$HOSTDIR/bin:$PATH make DESTDIR=$HOSTDIR install-strip
 }
 
 while getopts ":j:" o; do
