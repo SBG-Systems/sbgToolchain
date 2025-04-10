@@ -78,7 +78,7 @@ build_gcc()
 		--enable-lto \
 		--enable-static \
 		--enable-libstdcxx \
-		--enable-cxx-flags="$TARGET_CFLAGS" \
+		--enable-cxx-flags="-fno-use-cxa-atexit $TARGET_CFLAGS" \
 		--disable-shared \
 		--disable-nls \
 		--disable-libssp \
